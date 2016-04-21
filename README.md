@@ -1,2 +1,3 @@
-# stgps
+# Suntech
+
 Suntech GPS parsers
