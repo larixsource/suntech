@@ -1,10 +1,11 @@
 package st300
 
 import (
+	"bytes"
+	"fmt"
 	"testing"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/larixsource/suntech/st"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -55,155 +56,40 @@ var testEMG = EmergencyReport{
 	RealTime:         true,
 }
 
-func TestEMG300PanicButton(t *testing.T) {
-	expectedEMG := testEMG
+func TestEMG300(t *testing.T) {
+	// add to buf all type of EMG frames
+	frameTemplate := "ST300EMG;100850000;01;010;20081017;07:41:56;00100;+37.478519;+126.886819;000.012;000.00;9;1;0;15.30;001100;%d;0;4.5;1\r"
+	idList := []int{1, 2, 3, 5, 6, 7, 8}
+	var frames []string
+	var buf bytes.Buffer
+	for _, id := range idList {
+		frame := fmt.Sprintf(frameTemplate, id)
+		frames = append(frames, frame)
+		buf.WriteString(frame)
+	}
 
-	frame := "ST300EMG;100850000;01;010;20081017;07:41:56;00100;+37.478519;+126.886819;000.012;000.00;9;1;0;15.30;001100;1;0;4.5;1\r"
-	p := ParseString(frame, ParserOpts{})
-	assert.True(t, p.Next())
+	// parse content of buf, save extracted msgs
+	var msgs []*Msg
+	p := ParseBytes(buf.Bytes(), ParserOpts{})
+	for p.Next() {
+		msgs = append(msgs, p.Msg())
+	}
 	assert.Nil(t, p.Error())
-	msg := p.Msg()
-	require.NotNil(t, msg)
-	spew.Dump(msg)
 
-	assert.EqualValues(t, st.ST300, msg.Model)
-	assert.Equal(t, []byte(frame), msg.Frame)
-	assert.Nil(t, msg.ParsingError)
-
-	assert.Equal(t, msg.Type, EMGReport)
-	equalEMG(t, &expectedEMG, msg.EMG)
-
-	assert.False(t, p.Next())
-}
-
-func TestEMG300ParkingLock(t *testing.T) {
+	// check every extracted msg
 	expectedEMG := testEMG
-	expectedEMG.EmgID = st.ParkingLockEmg
+	expectedEMGID := []st.EmergencyType{st.PanicButtonEmg, st.ParkingLockEmg, st.RemovingMainPowerEmg,
+		st.AntiTheftEmg, st.AntiTheftDoorEmg, st.MotionEmg, st.AntiTheftShockEmg}
+	assert.Len(t, msgs, len(idList))
+	for i, msg := range msgs {
+		expectedEMG.EmgID = expectedEMGID[i]
 
-	frame := "ST300EMG;100850000;01;010;20081017;07:41:56;00100;+37.478519;+126.886819;000.012;000.00;9;1;0;15.30;001100;2;0;4.5;1\r"
-	p := ParseString(frame, ParserOpts{})
-	assert.True(t, p.Next())
-	assert.Nil(t, p.Error())
-	msg := p.Msg()
-	require.NotNil(t, msg)
-	spew.Dump(msg)
+		assert.EqualValues(t, st.ST300, msg.Model)
+		assert.Equal(t, []byte(frames[i]), msg.Frame)
+		assert.Nil(t, msg.ParsingError)
 
-	assert.EqualValues(t, st.ST300, msg.Model)
-	assert.Equal(t, []byte(frame), msg.Frame)
-	assert.Nil(t, msg.ParsingError)
-
-	assert.Equal(t, msg.Type, EMGReport)
-	equalEMG(t, &expectedEMG, msg.EMG)
-
-	assert.False(t, p.Next())
-}
-
-func TestEMG300RemovingMainPower(t *testing.T) {
-	expectedEMG := testEMG
-	expectedEMG.EmgID = st.RemovingMainPowerEmg
-
-	frame := "ST300EMG;100850000;01;010;20081017;07:41:56;00100;+37.478519;+126.886819;000.012;000.00;9;1;0;15.30;001100;3;0;4.5;1\r"
-	p := ParseString(frame, ParserOpts{})
-	assert.True(t, p.Next())
-	assert.Nil(t, p.Error())
-	msg := p.Msg()
-	require.NotNil(t, msg)
-	spew.Dump(msg)
-
-	assert.EqualValues(t, st.ST300, msg.Model)
-	assert.Equal(t, []byte(frame), msg.Frame)
-	assert.Nil(t, msg.ParsingError)
-
-	assert.Equal(t, msg.Type, EMGReport)
-	equalEMG(t, &expectedEMG, msg.EMG)
-
-	assert.False(t, p.Next())
-}
-
-func TestEMG300AntiThef(t *testing.T) {
-	expectedEMG := testEMG
-	expectedEMG.EmgID = st.AntiTheftEmg
-
-	frame := "ST300EMG;100850000;01;010;20081017;07:41:56;00100;+37.478519;+126.886819;000.012;000.00;9;1;0;15.30;001100;5;0;4.5;1\r"
-	p := ParseString(frame, ParserOpts{})
-	assert.True(t, p.Next())
-	assert.Nil(t, p.Error())
-	msg := p.Msg()
-	require.NotNil(t, msg)
-	spew.Dump(msg)
-
-	assert.EqualValues(t, st.ST300, msg.Model)
-	assert.Equal(t, []byte(frame), msg.Frame)
-	assert.Nil(t, msg.ParsingError)
-
-	assert.Equal(t, msg.Type, EMGReport)
-	equalEMG(t, &expectedEMG, msg.EMG)
-
-	assert.False(t, p.Next())
-}
-
-func TestEMG300AntiTheftDoor(t *testing.T) {
-	expectedEMG := testEMG
-	expectedEMG.EmgID = st.AntiTheftDoorEmg
-
-	frame := "ST300EMG;100850000;01;010;20081017;07:41:56;00100;+37.478519;+126.886819;000.012;000.00;9;1;0;15.30;001100;6;0;4.5;1\r"
-	p := ParseString(frame, ParserOpts{})
-	assert.True(t, p.Next())
-	assert.Nil(t, p.Error())
-	msg := p.Msg()
-	require.NotNil(t, msg)
-	spew.Dump(msg)
-
-	assert.EqualValues(t, st.ST300, msg.Model)
-	assert.Equal(t, []byte(frame), msg.Frame)
-	assert.Nil(t, msg.ParsingError)
-
-	assert.Equal(t, msg.Type, EMGReport)
-	equalEMG(t, &expectedEMG, msg.EMG)
-
-	assert.False(t, p.Next())
-}
-
-func TestEMG300Motion(t *testing.T) {
-	expectedEMG := testEMG
-	expectedEMG.EmgID = st.MotionEmg
-
-	frame := "ST300EMG;100850000;01;010;20081017;07:41:56;00100;+37.478519;+126.886819;000.012;000.00;9;1;0;15.30;001100;7;0;4.5;1\r"
-	p := ParseString(frame, ParserOpts{})
-	assert.True(t, p.Next())
-	assert.Nil(t, p.Error())
-	msg := p.Msg()
-	require.NotNil(t, msg)
-	spew.Dump(msg)
-
-	assert.EqualValues(t, st.ST300, msg.Model)
-	assert.Equal(t, []byte(frame), msg.Frame)
-	assert.Nil(t, msg.ParsingError)
-
-	assert.Equal(t, msg.Type, EMGReport)
-	equalEMG(t, &expectedEMG, msg.EMG)
-
-	assert.False(t, p.Next())
-}
-
-func TestEMG300AntiTheftShock(t *testing.T) {
-	expectedEMG := testEMG
-	expectedEMG.EmgID = st.AntiTheftShockEmg
-
-	frame := "ST300EMG;100850000;01;010;20081017;07:41:56;00100;+37.478519;+126.886819;000.012;000.00;9;1;0;15.30;001100;8;0;4.5;1\r"
-	p := ParseString(frame, ParserOpts{})
-	assert.True(t, p.Next())
-	assert.Nil(t, p.Error())
-	msg := p.Msg()
-	require.NotNil(t, msg)
-	spew.Dump(msg)
-
-	assert.EqualValues(t, st.ST300, msg.Model)
-	assert.Equal(t, []byte(frame), msg.Frame)
-	assert.Nil(t, msg.ParsingError)
-
-	assert.Equal(t, msg.Type, EMGReport)
-	equalEMG(t, &expectedEMG, msg.EMG)
-
+		assert.Equal(t, msg.Type, EMGReport)
+		equalEMG(t, &expectedEMG, msg.EMG)
+	}
 	assert.False(t, p.Next())
 }
