@@ -7,21 +7,21 @@ import "errors"
 type Model uint8
 
 const (
-	UnknownModel Model = 0
-	ST300        Model = 1
-	ST340        Model = 2
-	ST340LC      Model = 3
-	ST300H       Model = 4
-	ST350        Model = 5
-	ST480        Model = 6
-	ST300A       Model = 7
-	ST300R       Model = 8
-	ST300B       Model = 9
-	ST300V       Model = 10
-	ST300C       Model = 11
-	ST300K       Model = 12
-	ST300P       Model = 13
-	ST300F       Model = 14
+	UnknownModel Model = iota
+	ST300
+	ST340
+	ST340LC
+	ST300H
+	ST350
+	ST480
+	ST300A
+	ST300R
+	ST300B
+	ST300V
+	ST300C
+	ST300K
+	ST300P
+	ST300F
 )
 
 const (
@@ -40,10 +40,11 @@ var (
 type ModeType int
 
 const (
-	IdleMode     ModeType = 1
-	ActiveMode   ModeType = 2
-	DistanceMode ModeType = 4
-	AngleMode    ModeType = 5
+	IdleMode ModeType = iota + 1
+	ActiveMode
+	_
+	DistanceMode
+	AngleMode
 )
 
 // EmergencyType is the type of an emergency report
@@ -51,12 +52,14 @@ type EmergencyType int
 
 const (
 	// PanicButton is issued when the panic button is pressed.
-	PanicButtonEmg EmergencyType = iota
+	PanicButtonEmg EmergencyType = iota + 1
 
 	ParkingLockEmg
 
 	// RemovingMainPower is issued when the main power is removed (available only in  with backup battery).
 	RemovingMainPowerEmg
+
+	_
 
 	AntiTheftEmg
 
