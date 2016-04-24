@@ -36,6 +36,8 @@ type Token struct {
 
 	// Literal holds the token bytes, plus the separator at the end
 	Literal []byte
+
+	state dfaState
 }
 
 // OnlyDigits returns true if the token contains only digits (is a BitsToken or a DigitsToken)
@@ -43,58 +45,28 @@ func (t *Token) OnlyDigits() bool {
 	return t.Type == BitsToken || t.Type == DigitsToken
 }
 
-// byte changes the Type field according to the byte c.
+// byte changes the Type field according to the byte c (make the internal dfa state to change).
 func (t *Token) byte(c byte) {
-	switch t.Type {
-	case EmptyToken:
-		switch {
-		case c == '0' || c == '1':
-			t.Type = BitsToken
-		case c >= '2' && c <= '9':
-			t.Type = DigitsToken
-		case c == 'a' || c == 'b' || c == 'c' || c == 'd' || c == 'e' || c == 'f' ||
-			c == 'A' || c == 'B' || c == 'C' || c == 'D' || c == 'E' || c == 'F':
-			t.Type = HexToken
-		case c == '-' || c == '+':
-			t.Type = FloatToken
-		default:
-			t.Type = DataToken
-		}
-	case BitsToken:
-		switch {
-		case c == '0' || c == '1':
-		case c >= '2' && c <= '9':
-			t.Type = DigitsToken
-		case c == 'a' || c == 'b' || c == 'c' || c == 'd' || c == 'e' || c == 'f' ||
-			c == 'A' || c == 'B' || c == 'C' || c == 'D' || c == 'E' || c == 'F':
-			t.Type = HexToken
-		default:
-			t.Type = DataToken
-		}
-	case DigitsToken:
-		switch {
-		case c >= '0' && c <= '9':
-		case c == 'a' || c == 'b' || c == 'c' || c == 'd' || c == 'e' || c == 'f' ||
-			c == 'A' || c == 'B' || c == 'C' || c == 'D' || c == 'E' || c == 'F':
-			t.Type = HexToken
-		case c == '.':
-			t.Type = FloatToken
-		default:
-			t.Type = DataToken
-		}
-	case HexToken:
-		switch {
-		case (c >= '0' && c <= '9') || (c == 'a' || c == 'b' || c == 'c' || c == 'd' || c == 'e' || c == 'f' ||
-			c == 'A' || c == 'B' || c == 'C' || c == 'D' || c == 'E' || c == 'F'):
-			t.Type = HexToken
-		default:
-			t.Type = DataToken
-		}
-	case FloatToken:
-		if c < '0' || c > '9' {
-			t.Type = DataToken
-		}
-	case DataToken:
+	t.state = t.state.next(c)
+	switch t.state {
+	case emptyState:
+		panic("impossibru!")
+	case bitsState:
+		t.Type = BitsToken
+	case digitsState:
+		t.Type = DigitsToken
+	case hexState:
+		t.Type = HexToken
+	case signState:
+		t.Type = DataToken
+	case intState:
+		t.Type = DataToken
+	case dotState:
+		t.Type = DataToken
+	case floatState:
+		t.Type = FloatToken
+	case dataState:
+		t.Type = DataToken
 	default:
 		panic(fmt.Errorf("unknown token type: %v", t.Type))
 	}
