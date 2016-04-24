@@ -35,6 +35,8 @@ const (
 var (
 	ErrZipUnsupported   = errors.New("zip msg unsupported")
 	ErrUnsupportedModel = errors.New("unsupported model")
+
+	ResLiteral = []byte{'R', 'e', 's'}
 )
 
 type ModeType int
@@ -68,4 +70,21 @@ const (
 	MotionEmg
 
 	AntiTheftShockEmg
+)
+
+// EventType is the type of an event report.
+type EventType int
+
+const (
+	Input1GroundEvt EventType = iota + 1
+
+	Input1OpenEvt
+
+	Input2GroundEvt
+
+	Input2OpenEvt
+
+	Input3GroundEvt
+
+	Input3OpenEvt
 )

@@ -23,7 +23,7 @@ func TestParseAllSpec(t *testing.T) {
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
 		// skip empty lines
-		if len(scanner.Bytes()) > 0 {
+		if len(scanner.Bytes()) > 0 && scanner.Bytes()[0] != '#' {
 			frame := make([]byte, 0, len(scanner.Bytes())+1)
 			frame = append(frame, scanner.Bytes()...)
 			frame = append(frame, st.EndOfFrame)

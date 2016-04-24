@@ -39,6 +39,7 @@ var (
 	ErrInvalidHMeter    = errors.New("invalid HMeter")
 	ErrInvalidMsgType   = errors.New("invalid MsgType")
 	ErrInvalidEmgID     = errors.New("invalid EmgID")
+	ErrInvalidEvtID     = errors.New("invalid EvtID")
 )
 
 func AsciiDevID(lex *lexer.Lexer) (devID string, token lexer.Token, err error) {
@@ -453,6 +454,38 @@ func AsciiEmgID(lex *lexer.Lexer) (emgType EmergencyType, token lexer.Token, err
 		emgType = AntiTheftShockEmg
 	default:
 		err = fmt.Errorf("unknown EmgID value: %v", token.Literal[0])
+	}
+	return
+}
+
+func AsciiEvtID(lex *lexer.Lexer) (evtType EventType, token lexer.Token, err error) {
+	token, err = lex.NextFixed(2)
+	if err != nil {
+		return
+	}
+	if !token.OnlyDigits() {
+		err = ErrInvalidEvtID
+		return
+	}
+	if !token.EndsWith(Separator) {
+		err = ErrSeparator
+		return
+	}
+	switch token.Literal[0] {
+	case '1':
+		evtType = Input1GroundEvt
+	case '2':
+		evtType = Input1OpenEvt
+	case '3':
+		evtType = Input2GroundEvt
+	case '4':
+		evtType = Input2OpenEvt
+	case '5':
+		evtType = Input3GroundEvt
+	case '6':
+		evtType = Input3OpenEvt
+	default:
+		err = fmt.Errorf("unknown EvtID value: %v", token.Literal[0])
 	}
 	return
 }

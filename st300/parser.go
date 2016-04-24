@@ -95,14 +95,16 @@ func (p *Parser) parseAscii() *Msg {
 		parseSTTAscii(p.lex, msg)
 	case EMGReport:
 		parseEMGAscii(p.lex, msg)
+	case EVTReport:
+		parseEVTAscii(p.lex, msg)
 	default:
 		msg.ParsingError = ErrUnknownHdr
-		if p.opts.SkipUnknownFrames {
-			token, err := p.lex.Next(1024, st.EndOfFrame)
-			msg.Frame = append(msg.Frame, token.Literal...)
-			if err != nil {
-				msg.ParsingError = fmt.Errorf("error reading unknown frame: %+v", err)
-			}
+	}
+	if msg.ParsingError == ErrUnknownHdr && p.opts.SkipUnknownFrames {
+		token, err := p.lex.Next(1024, st.EndOfFrame)
+		msg.Frame = append(msg.Frame, token.Literal...)
+		if err != nil {
+			msg.ParsingError = fmt.Errorf("error reading unknown frame: %+v", err)
 		}
 	}
 
@@ -112,6 +114,7 @@ func (p *Parser) parseAscii() *Msg {
 var (
 	sttHdr = []byte("T300STT;")
 	emgHdr = []byte("T300EMG;")
+	evtHdr = []byte("T300EVT;")
 )
 
 func asciiHdr(token lexer.Token) MsgType {
@@ -123,6 +126,8 @@ func asciiHdr(token lexer.Token) MsgType {
 		return STTReport
 	case bytes.Equal(token.Literal, emgHdr):
 		return EMGReport
+	case bytes.Equal(token.Literal, evtHdr):
+		return EVTReport
 	default:
 		return UnknownMsg
 	}
