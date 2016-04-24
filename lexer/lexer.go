@@ -50,6 +50,11 @@ func (t *Token) IsHex() bool {
 	return t.Type == BitsToken || t.Type == DigitsToken || t.Type == HexToken
 }
 
+// IsFloat returns true if the token contains a valid float (is a BitsToken, DigitsToken or FloatToken)
+func (t *Token) IsFloat() bool {
+	return t.Type == BitsToken || t.Type == DigitsToken || t.Type == FloatToken
+}
+
 // EndsWith returns true if the last byte of the Literal is equals to the given delim byte.
 func (t *Token) EndsWith(delim byte) bool {
 	ll := len(t.Literal)

@@ -163,7 +163,7 @@ func AsciiLat(lex *lexer.Lexer) (lat float32, token lexer.Token, err error) {
 	if err != nil {
 		return
 	}
-	if token.Type != lexer.FloatToken {
+	if !token.IsFloat() {
 		err = ErrInvalidLat
 		return
 	}
@@ -181,7 +181,7 @@ func AsciiLon(lex *lexer.Lexer) (lng float32, token lexer.Token, err error) {
 	if err != nil {
 		return
 	}
-	if token.Type != lexer.FloatToken {
+	if !token.IsFloat() {
 		err = ErrInvalidLng
 		return
 	}
@@ -199,7 +199,7 @@ func AsciiSpeed(lex *lexer.Lexer) (speed float32, token lexer.Token, err error) 
 	if err != nil {
 		return
 	}
-	if token.Type != lexer.FloatToken {
+	if !token.IsFloat() {
 		err = ErrInvalidSpeed
 		return
 	}
@@ -217,7 +217,7 @@ func AsciiCourse(lex *lexer.Lexer) (speed float32, token lexer.Token, err error)
 	if err != nil {
 		return
 	}
-	if token.Type != lexer.FloatToken {
+	if !token.IsFloat() {
 		err = ErrInvalidCourse
 		return
 	}
@@ -291,7 +291,7 @@ func AsciiPowerVolt(lex *lexer.Lexer) (powerVolt float32, token lexer.Token, err
 	if err != nil {
 		return
 	}
-	if token.Type != lexer.FloatToken {
+	if !token.IsFloat() {
 		err = ErrInvalidPowerVolt
 		return
 	}
@@ -376,7 +376,7 @@ func AsciiBackupVolt(lex *lexer.Lexer) (backupVolt float32, token lexer.Token, e
 	if err != nil {
 		return
 	}
-	if token.Type != lexer.FloatToken {
+	if !token.IsFloat() {
 		err = ErrInvalidHMeter
 		return
 	}
