@@ -38,6 +38,7 @@ var (
 	ErrInvalidMsgNum    = errors.New("invalid MsgNum")
 	ErrInvalidHMeter    = errors.New("invalid HMeter")
 	ErrInvalidMsgType   = errors.New("invalid MsgType")
+	ErrInvalidEmgID     = errors.New("invalid EmgID")
 )
 
 func AsciiDevID(lex *lexer.Lexer) (devID string, token lexer.Token, err error) {
@@ -419,5 +420,39 @@ func AsciiMsgType(lex *lexer.Lexer, last bool) (realTime bool, token lexer.Token
 
 func AsciiUnknownTail(lex *lexer.Lexer, max int) (token lexer.Token, err error) {
 	token, err = lex.Next(max, EndOfFrame)
+	return
+}
+
+func AsciiEmgID(lex *lexer.Lexer) (emgType EmergencyType, token lexer.Token, err error) {
+	token, err = lex.NextFixed(2)
+	if err != nil {
+		return
+	}
+	if !token.OnlyDigits() {
+		err = ErrInvalidEmgID
+		return
+	}
+	if !token.EndsWith(Separator) {
+		err = ErrSeparator
+		return
+	}
+	switch token.Literal[0] {
+	case '1':
+		emgType = PanicButtonEmg
+	case '2':
+		emgType = ParkingLockEmg
+	case '3':
+		emgType = RemovingMainPowerEmg
+	case '5':
+		emgType = AntiTheftEmg
+	case '6':
+		emgType = AntiTheftDoorEmg
+	case '7':
+		emgType = MotionEmg
+	case '8':
+		emgType = AntiTheftShockEmg
+	default:
+		err = fmt.Errorf("unknown EmgID value: %v", token.Literal[0])
+	}
 	return
 }

@@ -35,7 +35,7 @@ func main() {
 }
 ```
 
-Also, there a ParseBytes function, that accepts a byte slice.
+Also, there's the function ParseBytes, that accepts a byte slice.
 
 However, the parser is designed to operate over a stream, extracting frames in a loop from a reader (a file, socket, etc):
 

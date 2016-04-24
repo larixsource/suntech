@@ -45,3 +45,24 @@ const (
 	DistanceMode ModeType = 4
 	AngleMode    ModeType = 5
 )
+
+// EmergencyType is the type of an emergency report
+type EmergencyType int
+
+const (
+	// PanicButton is issued when the panic button is pressed.
+	PanicButtonEmg EmergencyType = iota
+
+	ParkingLockEmg
+
+	// RemovingMainPower is issued when the main power is removed (available only in  with backup battery).
+	RemovingMainPowerEmg
+
+	AntiTheftEmg
+
+	AntiTheftDoorEmg
+
+	MotionEmg
+
+	AntiTheftShockEmg
+)

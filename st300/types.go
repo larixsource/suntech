@@ -45,6 +45,7 @@ type Msg struct {
 	Type MsgType
 
 	StatusReport *StatusReport
+	EMG          *EmergencyReport
 
 	Frame []byte
 
