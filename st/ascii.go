@@ -326,7 +326,7 @@ func AsciiMode(lex *lexer.Lexer) (mode ModeType, token lexer.Token, err error) {
 	case '5':
 		mode = AngleMode
 	default:
-		err = fmt.Errorf("invalid mode value: %d", mode)
+		err = fmt.Errorf("invalid mode value: %v", token.Literal[0])
 	}
 	return
 }
@@ -412,7 +412,7 @@ func AsciiMsgType(lex *lexer.Lexer, last bool) (realTime bool, token lexer.Token
 	case '1':
 		realTime = true
 	default:
-		err = fmt.Errorf("invalid MsgType value: %d", realTime)
+		err = fmt.Errorf("invalid MsgType value: %v", token.Literal[0])
 	}
 	return
 }
