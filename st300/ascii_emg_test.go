@@ -33,7 +33,31 @@ func equalEMG(t *testing.T, expected *EmergencyReport, actual *EmergencyReport) 
 	assert.Equal(t, expected.RealTime, actual.RealTime)
 }
 
-func TestEMG300(t *testing.T) {
+var testEMG = EmergencyReport{
+	Hdr:              EMGReport,
+	DevID:            "100850000",
+	Model:            st.ST300,
+	SwVer:            10,
+	Timestamp:        time.Date(2008, 10, 17, 7, 41, 56, 0, time.UTC),
+	Cell:             "00100",
+	Latitude:         37.478519,
+	Longitude:        126.886819,
+	Speed:            0.012,
+	Course:           0,
+	Satellites:       9,
+	GPSFixed:         true,
+	Distance:         0,
+	PowerVolt:        15.3,
+	IO:               "001100",
+	EmgID:            st.PanicButtonEmg,
+	DrivingHourMeter: 0,
+	BackupVolt:       4.5,
+	RealTime:         true,
+}
+
+func TestEMG300PanicButton(t *testing.T) {
+	expectedEMG := testEMG
+
 	frame := "ST300EMG;100850000;01;010;20081017;07:41:56;00100;+37.478519;+126.886819;000.012;000.00;9;1;0;15.30;001100;1;0;4.5;1\r"
 	p := ParseString(frame, ParserOpts{})
 	assert.True(t, p.Next())
@@ -42,35 +66,144 @@ func TestEMG300(t *testing.T) {
 	require.NotNil(t, msg)
 	spew.Dump(msg)
 
-	expectedEMG := &EmergencyReport{
-		Hdr:              EMGReport,
-		DevID:            "100850000",
-		Model:            st.ST300,
-		SwVer:            10,
-		Timestamp:        time.Date(2008, 10, 17, 7, 41, 56, 0, time.UTC),
-		Cell:             "00100",
-		Latitude:         37.478519,
-		Longitude:        126.886819,
-		Speed:            0.012,
-		Course:           0,
-		Satellites:       9,
-		GPSFixed:         true,
-		Distance:         0,
-		PowerVolt:        15.3,
-		IO:               "001100",
-		EmgID:            st.PanicButtonEmg,
-		DrivingHourMeter: 0,
-		BackupVolt:       4.5,
-		RealTime:         true,
-	}
+	assert.EqualValues(t, st.ST300, msg.Model)
+	assert.Equal(t, []byte(frame), msg.Frame)
+	assert.Nil(t, msg.ParsingError)
+
+	assert.Equal(t, msg.Type, EMGReport)
+	equalEMG(t, &expectedEMG, msg.EMG)
+
+	assert.False(t, p.Next())
+}
+
+func TestEMG300ParkingLock(t *testing.T) {
+	expectedEMG := testEMG
+	expectedEMG.EmgID = st.ParkingLockEmg
+
+	frame := "ST300EMG;100850000;01;010;20081017;07:41:56;00100;+37.478519;+126.886819;000.012;000.00;9;1;0;15.30;001100;2;0;4.5;1\r"
+	p := ParseString(frame, ParserOpts{})
+	assert.True(t, p.Next())
+	assert.Nil(t, p.Error())
+	msg := p.Msg()
+	require.NotNil(t, msg)
+	spew.Dump(msg)
 
 	assert.EqualValues(t, st.ST300, msg.Model)
 	assert.Equal(t, []byte(frame), msg.Frame)
 	assert.Nil(t, msg.ParsingError)
 
 	assert.Equal(t, msg.Type, EMGReport)
-	equalEMG(t, expectedEMG, msg.EMG)
+	equalEMG(t, &expectedEMG, msg.EMG)
 
 	assert.False(t, p.Next())
+}
 
+func TestEMG300RemovingMainPower(t *testing.T) {
+	expectedEMG := testEMG
+	expectedEMG.EmgID = st.RemovingMainPowerEmg
+
+	frame := "ST300EMG;100850000;01;010;20081017;07:41:56;00100;+37.478519;+126.886819;000.012;000.00;9;1;0;15.30;001100;3;0;4.5;1\r"
+	p := ParseString(frame, ParserOpts{})
+	assert.True(t, p.Next())
+	assert.Nil(t, p.Error())
+	msg := p.Msg()
+	require.NotNil(t, msg)
+	spew.Dump(msg)
+
+	assert.EqualValues(t, st.ST300, msg.Model)
+	assert.Equal(t, []byte(frame), msg.Frame)
+	assert.Nil(t, msg.ParsingError)
+
+	assert.Equal(t, msg.Type, EMGReport)
+	equalEMG(t, &expectedEMG, msg.EMG)
+
+	assert.False(t, p.Next())
+}
+
+func TestEMG300AntiThef(t *testing.T) {
+	expectedEMG := testEMG
+	expectedEMG.EmgID = st.AntiTheftEmg
+
+	frame := "ST300EMG;100850000;01;010;20081017;07:41:56;00100;+37.478519;+126.886819;000.012;000.00;9;1;0;15.30;001100;5;0;4.5;1\r"
+	p := ParseString(frame, ParserOpts{})
+	assert.True(t, p.Next())
+	assert.Nil(t, p.Error())
+	msg := p.Msg()
+	require.NotNil(t, msg)
+	spew.Dump(msg)
+
+	assert.EqualValues(t, st.ST300, msg.Model)
+	assert.Equal(t, []byte(frame), msg.Frame)
+	assert.Nil(t, msg.ParsingError)
+
+	assert.Equal(t, msg.Type, EMGReport)
+	equalEMG(t, &expectedEMG, msg.EMG)
+
+	assert.False(t, p.Next())
+}
+
+func TestEMG300AntiTheftDoor(t *testing.T) {
+	expectedEMG := testEMG
+	expectedEMG.EmgID = st.AntiTheftDoorEmg
+
+	frame := "ST300EMG;100850000;01;010;20081017;07:41:56;00100;+37.478519;+126.886819;000.012;000.00;9;1;0;15.30;001100;6;0;4.5;1\r"
+	p := ParseString(frame, ParserOpts{})
+	assert.True(t, p.Next())
+	assert.Nil(t, p.Error())
+	msg := p.Msg()
+	require.NotNil(t, msg)
+	spew.Dump(msg)
+
+	assert.EqualValues(t, st.ST300, msg.Model)
+	assert.Equal(t, []byte(frame), msg.Frame)
+	assert.Nil(t, msg.ParsingError)
+
+	assert.Equal(t, msg.Type, EMGReport)
+	equalEMG(t, &expectedEMG, msg.EMG)
+
+	assert.False(t, p.Next())
+}
+
+func TestEMG300Motion(t *testing.T) {
+	expectedEMG := testEMG
+	expectedEMG.EmgID = st.MotionEmg
+
+	frame := "ST300EMG;100850000;01;010;20081017;07:41:56;00100;+37.478519;+126.886819;000.012;000.00;9;1;0;15.30;001100;7;0;4.5;1\r"
+	p := ParseString(frame, ParserOpts{})
+	assert.True(t, p.Next())
+	assert.Nil(t, p.Error())
+	msg := p.Msg()
+	require.NotNil(t, msg)
+	spew.Dump(msg)
+
+	assert.EqualValues(t, st.ST300, msg.Model)
+	assert.Equal(t, []byte(frame), msg.Frame)
+	assert.Nil(t, msg.ParsingError)
+
+	assert.Equal(t, msg.Type, EMGReport)
+	equalEMG(t, &expectedEMG, msg.EMG)
+
+	assert.False(t, p.Next())
+}
+
+func TestEMG300AntiTheftShock(t *testing.T) {
+	expectedEMG := testEMG
+	expectedEMG.EmgID = st.AntiTheftShockEmg
+
+	frame := "ST300EMG;100850000;01;010;20081017;07:41:56;00100;+37.478519;+126.886819;000.012;000.00;9;1;0;15.30;001100;8;0;4.5;1\r"
+	p := ParseString(frame, ParserOpts{})
+	assert.True(t, p.Next())
+	assert.Nil(t, p.Error())
+	msg := p.Msg()
+	require.NotNil(t, msg)
+	spew.Dump(msg)
+
+	assert.EqualValues(t, st.ST300, msg.Model)
+	assert.Equal(t, []byte(frame), msg.Frame)
+	assert.Nil(t, msg.ParsingError)
+
+	assert.Equal(t, msg.Type, EMGReport)
+	equalEMG(t, &expectedEMG, msg.EMG)
+
+	assert.False(t, p.Next())
 }
