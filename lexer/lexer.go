@@ -50,6 +50,15 @@ func (t *Token) IsHex() bool {
 	return t.Type == BitsToken || t.Type == DigitsToken || t.Type == HexToken
 }
 
+// EndsWith returns true if the last byte of the Literal is equals to the given delim byte.
+func (t *Token) EndsWith(delim byte) bool {
+	ll := len(t.Literal)
+	if ll > 0 {
+		return t.Literal[ll-1] == delim
+	}
+	return false
+}
+
 // byte changes the Type field according to the byte c (make the internal dfa state to change).
 func (t *Token) byte(c byte) {
 	t.state = t.state.next(c)
