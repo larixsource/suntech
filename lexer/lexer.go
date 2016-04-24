@@ -45,6 +45,11 @@ func (t *Token) OnlyDigits() bool {
 	return t.Type == BitsToken || t.Type == DigitsToken
 }
 
+// IsHex returns true if the token contains only hex digits (is a BitsToken, DigitsToken or HexToken)
+func (t *Token) IsHex() bool {
+	return t.Type == BitsToken || t.Type == DigitsToken || t.Type == HexToken
+}
+
 // byte changes the Type field according to the byte c (make the internal dfa state to change).
 func (t *Token) byte(c byte) {
 	t.state = t.state.next(c)
