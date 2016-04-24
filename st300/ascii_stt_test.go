@@ -4,7 +4,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/larixsource/suntech/st"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -44,7 +43,6 @@ func TestSTT340LC(t *testing.T) {
 	assert.Nil(t, p.Error())
 	msg := p.Msg()
 	require.NotNil(t, msg)
-	spew.Dump(msg)
 
 	expectedSTT := &StatusReport{
 		Hdr:              STTReport,
@@ -87,8 +85,6 @@ func TestSTT340Buff(t *testing.T) {
 	msg := p.Msg()
 	require.NotNil(t, msg)
 
-	spew.Dump(msg)
-
 	expectedSTT := &StatusReport{
 		Hdr:              STTReport,
 		DevID:            "205150043",
@@ -129,8 +125,6 @@ func TestSTT300K(t *testing.T) {
 	assert.Nil(t, p.Error())
 	msg := p.Msg()
 	require.NotNil(t, msg)
-
-	spew.Dump(msg)
 
 	expectedSTT := &StatusReport{
 		Hdr:              STTReport,

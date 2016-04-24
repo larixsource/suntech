@@ -3,7 +3,6 @@ package st300
 import (
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/larixsource/suntech/lexer"
 	"github.com/larixsource/suntech/st"
 )
@@ -182,7 +181,6 @@ func parseEMGAscii(lex *lexer.Lexer, msg *Msg) {
 	if model != st.ST300 && model != st.ST340 && model != st.ST340LC {
 		unknownTail = true
 	}
-	spew.Dump(unknownTail, model)
 
 	realTime, token, err := st.AsciiMsgType(lex, !unknownTail)
 	msg.Frame = append(msg.Frame, token.Literal...)
