@@ -59,6 +59,15 @@ func (t *Token) EndsWith(delim byte) bool {
 	return false
 }
 
+// WithoutSuffix returns Literal without its last byte
+func (t *Token) WithoutSuffix() []byte {
+	ll := len(t.Literal)
+	if ll > 0 {
+		return t.Literal[:ll-1]
+	}
+	return nil
+}
+
 // byte changes the Type field according to the byte c (make the internal dfa state to change).
 func (t *Token) byte(c byte) {
 	t.state = t.state.next(c)
