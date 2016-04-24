@@ -186,7 +186,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 	msg.StatusReport.BackupVolt = backupVolt
 
 	var unknownTail bool
-	if model != st.ST300RI && model != st.ST340 && model != st.ST340LC {
+	if model != st.ST300 && model != st.ST340 && model != st.ST340LC {
 		unknownTail = true
 	}
 

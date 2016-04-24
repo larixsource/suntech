@@ -11,7 +11,7 @@ var ErrInvalidIO = errors.New("invalid IO")
 
 func knownModel(model st.Model) bool {
 	switch model {
-	case st.ST300RI, st.ST340, st.ST340LC, st.ST300H, st.ST350, st.ST480, st.ST300A,
+	case st.ST300, st.ST340, st.ST340LC, st.ST300H, st.ST350, st.ST480, st.ST300A,
 		st.ST300R, st.ST300B, st.ST300V, st.ST300C, st.ST300K, st.ST300P, st.ST300F:
 		return true
 	default:

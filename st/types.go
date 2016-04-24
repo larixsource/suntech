@@ -8,7 +8,7 @@ type Model uint8
 
 const (
 	UnknownModel Model = 0
-	ST300RI      Model = 1
+	ST300        Model = 1
 	ST340        Model = 2
 	ST340LC      Model = 3
 	ST300H       Model = 4
