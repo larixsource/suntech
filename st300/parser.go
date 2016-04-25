@@ -97,6 +97,8 @@ func (p *Parser) parseAscii() *Msg {
 		parseEMGAscii(p.lex, msg)
 	case EVTReport:
 		parseEVTAscii(p.lex, msg)
+	case ALTReport:
+		parseALTAscii(p.lex, msg)
 	default:
 		msg.ParsingError = ErrUnknownHdr
 	}
@@ -115,6 +117,7 @@ var (
 	sttHdr = []byte("T300STT;")
 	emgHdr = []byte("T300EMG;")
 	evtHdr = []byte("T300EVT;")
+	altHdr = []byte("T300ALT;")
 )
 
 func asciiHdr(token lexer.Token) MsgType {
@@ -128,6 +131,8 @@ func asciiHdr(token lexer.Token) MsgType {
 		return EMGReport
 	case bytes.Equal(token.Literal, evtHdr):
 		return EVTReport
+	case bytes.Equal(token.Literal, altHdr):
+		return ALTReport
 	default:
 		return UnknownMsg
 	}
