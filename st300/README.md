@@ -5,6 +5,9 @@
 Report | Supported
  --- | ---
 Status Report | yes
+Emergency Report | yes
+Event Report | yes
+Alert Report | yes
 
 Zip aren't supported yet.
 
