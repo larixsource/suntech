@@ -72,7 +72,7 @@ func TestSTT340LC(t *testing.T) {
 	assert.Nil(t, msg.ParsingError)
 
 	assert.Equal(t, msg.Type, STTReport)
-	equalSTT(t, expectedSTT, msg.StatusReport)
+	equalSTT(t, expectedSTT, msg.STT)
 
 	assert.False(t, p.Next())
 }
@@ -113,7 +113,7 @@ func TestSTT340Buff(t *testing.T) {
 	assert.Nil(t, msg.ParsingError)
 
 	assert.Equal(t, msg.Type, STTReport)
-	equalSTT(t, expectedSTT, msg.StatusReport)
+	equalSTT(t, expectedSTT, msg.STT)
 
 	assert.False(t, p.Next())
 }
@@ -154,7 +154,7 @@ func TestSTT300K(t *testing.T) {
 	assert.Nil(t, msg.ParsingError)
 
 	assert.Equal(t, msg.Type, STTReport)
-	equalSTT(t, expectedSTT, msg.StatusReport)
+	equalSTT(t, expectedSTT, msg.STT)
 
 	assert.False(t, p.Next())
 }

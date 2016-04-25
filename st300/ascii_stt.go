@@ -33,7 +33,7 @@ type StatusReport struct {
 func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 	msg.Type = STTReport
 
-	msg.StatusReport = &StatusReport{}
+	msg.STT = &StatusReport{}
 
 	devID, token, err := st.AsciiDevID(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -41,7 +41,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.DevID = devID
+	msg.STT.DevID = devID
 
 	model, token, err := st.AsciiModel(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -50,7 +50,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		return
 	}
 	msg.Model = model
-	msg.StatusReport.Model = model
+	msg.STT.Model = model
 	if !knownModel(model) {
 		msg.ParsingError = st.ErrUnsupportedModel
 		return
@@ -62,7 +62,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.SwVer = swVer
+	msg.STT.SwVer = swVer
 
 	ts, tokens, err := st.AsciiTimestamp(lex)
 	msg.Frame = append(msg.Frame, tokens[0].Literal...)
@@ -71,7 +71,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.Timestamp = ts
+	msg.STT.Timestamp = ts
 
 	cell, token, err := st.AsciiCell(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -79,7 +79,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.Cell = cell
+	msg.STT.Cell = cell
 
 	lat, token, err := st.AsciiLat(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -87,7 +87,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.Latitude = lat
+	msg.STT.Latitude = lat
 
 	lon, token, err := st.AsciiLon(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -95,7 +95,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.Longitude = lon
+	msg.STT.Longitude = lon
 
 	speed, token, err := st.AsciiSpeed(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -103,7 +103,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.Speed = speed
+	msg.STT.Speed = speed
 
 	course, token, err := st.AsciiCourse(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -111,7 +111,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.Course = course
+	msg.STT.Course = course
 
 	satellites, token, err := st.AsciiSatellites(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -119,7 +119,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.Satellites = satellites
+	msg.STT.Satellites = satellites
 
 	fix, token, err := st.AsciiFix(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -127,7 +127,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.GPSFixed = fix
+	msg.STT.GPSFixed = fix
 
 	distance, token, err := st.AsciiDistance(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -135,7 +135,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.Distance = distance
+	msg.STT.Distance = distance
 
 	powerVolt, token, err := st.AsciiPowerVolt(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -143,7 +143,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.PowerVolt = powerVolt
+	msg.STT.PowerVolt = powerVolt
 
 	ioStatus, token, err := asciiIO(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -151,7 +151,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.IO = ioStatus
+	msg.STT.IO = ioStatus
 
 	mode, token, err := st.AsciiMode(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -159,7 +159,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.Mode = mode
+	msg.STT.Mode = mode
 
 	msgNum, token, err := st.AsciiMsgNum(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -167,7 +167,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.MsgNum = msgNum
+	msg.STT.MsgNum = msgNum
 
 	hmeter, token, err := st.AsciiDrivingHourMeter(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -175,7 +175,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.DrivingHourMeter = hmeter
+	msg.STT.DrivingHourMeter = hmeter
 
 	backupVolt, token, err := st.AsciiBackupVolt(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -183,7 +183,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.BackupVolt = backupVolt
+	msg.STT.BackupVolt = backupVolt
 
 	var unknownTail bool
 	if model != st.ST300 && model != st.ST340 && model != st.ST340LC {
@@ -196,7 +196,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	msg.StatusReport.RealTime = realTime
+	msg.STT.RealTime = realTime
 
 	if unknownTail {
 		// TODO: estimate the maximum length of the unknown tail

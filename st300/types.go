@@ -44,10 +44,10 @@ type Msg struct {
 
 	Type MsgType
 
-	StatusReport *StatusReport
-	EMG          *EmergencyReport
-	EVT          *EventReport
-	ALT          *AlertReport
+	STT *StatusReport
+	EMG *EmergencyReport
+	EVT *EventReport
+	ALT *AlertReport
 
 	Frame []byte
 
