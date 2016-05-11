@@ -600,3 +600,26 @@ func AsciiAltID(lex *lexer.Lexer) (altType AlertType, token lexer.Token, err err
 	}
 	return
 }
+
+func AsciiADC(lex *lexer.Lexer, last bool) (adc float32, token lexer.Token, err error) {
+	var c byte = Separator
+	if last {
+		c = EndOfFrame
+	}
+	token, err = lex.Next(6, c)
+	if err != nil {
+		return
+	}
+	if !token.IsFloat() {
+		err = ErrInvalidHMeter
+		return
+	}
+	bv, parseErr := strconv.ParseFloat(string(token.WithoutSuffix()), 32)
+	if parseErr != nil {
+		err = parseErr
+		return
+	}
+	adc = float32(bv)
+
+	return
+}

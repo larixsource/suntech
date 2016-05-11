@@ -22,6 +22,13 @@ const (
 	ST300K
 	ST300P
 	ST300F
+	_ // 15
+	_
+	_
+	_
+	_
+	ST600R
+	ST600V
 )
 
 const (
