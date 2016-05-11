@@ -100,80 +100,80 @@ const (
 type AlertType int
 
 const (
-	// Start driving faster than SPEED_LIMIT.
+	// 1: Start driving faster than SPEED_LIMIT.
 	StartOverSpeedAlt AlertType = iota + 1
 
-	// Ended over-speed condition.
+	// 2: Ended over-speed condition.
 	StopOverSpeedAlt
 
-	// Disconnected GPS antenna.
+	// 3: Disconnected GPS antenna.
 	DisconnectedGPSAntennaAlt
 
-	// Reconnected GPS antenna after disconnected.
+	// 4: Reconnected GPS antenna after disconnected.
 	ReconnectedGPSAntennaAlt
 
-	// The vehicle exited the geo-fenced area that has the following ID.
+	// 5: The vehicle exited the geo-fenced area that has the following ID.
 	ExitedGeoFenceAlt
 
-	// The vehicle entered the geo-fenced area that has the following ID.
+	// 6: The vehicle entered the geo-fenced area that has the following ID.
 	EnteredGeoFenceAlt
 
 	_
 
-	// Shorted GPS antenna (This alert may not support depending on GPS chipset model).
+	// 8: Shorted GPS antenna (This alert may not support depending on GPS chipset model).
 	ShortedGPSAntennaAlt
 
-	// Enter the Deep Sleep Mode.
+	// 9: Enter the Deep Sleep Mode.
 	EnterDeepSleepModeAlt
 
-	// Exit from the Deep Sleep Mode.
+	// 10: Exit from the Deep Sleep Mode.
 	ExitDeepSleepModeAlt
 
 	_
 	_
 
-	// Backup battery error.
+	// 13: Backup battery error.
 	BackupBatteryErrorAlt
 
-	// Vehicle battery goes down to a very low level.
+	// 14: Vehicle battery goes down to a very low level.
 	BatteryLowLevelAlt
 
-	// Shocked.
+	// 15: Shocked.
 	ShockedAlt
 
-	// Collision has occurred to the vehicle.
+	// 16: Collision has occurred to the vehicle.
 	CollisionAlt
 
 	_
 
-	// Deviated from the predefined route.
+	// 18: Deviated from the predefined route.
 	DeviatedFromRouteAlt
 
-	// Entered into the predefined route.
+	// 19: Entered into the predefined route.
 	EnteredIntoRouteAlt
 
 	_
 	_
 
-	// Engine :Exceed Speed
+	// 22: Engine :Exceed Speed
 	EngineExceedSpeedAlt
 
-	// Engine :Vehicle Speed Violation
+	// 23: Engine :Vehicle Speed Violation
 	EngineVehicleSpeedAlt
 
-	// Engine :Coolant Temperature Violation
+	// 24: Engine :Coolant Temperature Violation
 	EngineCoolantTempAlt
 
-	// Engine :Oil Pressure Violation
+	// 25: Engine :Oil Pressure Violation
 	EngineOilPressureAlt
 
-	// Engine :RPM Violation
+	// 26: Engine :RPM Violation
 	EngineRPMAlt
 
-	// Engine :Sudden Hard Brake Violation
+	// 27: Engine :Sudden Hard Brake Violation
 	EngineHardBrakeAlt
 
-	// Engine :Error Code(DTC)
+	// 28: Engine :Error Code(DTC)
 	EngineErrCodeAlt
 
 	_
@@ -181,10 +181,10 @@ const (
 	_
 	_
 
-	// Ignition ON
+	// 33: Ignition ON
 	IgnitionOnAlt
 
-	// Ignition OFF
+	// 34: Ignition OFF
 	IgnitionOffAlt
 
 	_
@@ -193,34 +193,34 @@ const (
 	_
 	_
 
-	// Connected to the Main Power source.
+	// 40: Connected to the Main Power source.
 	ConnectedToMainPowerAlt
 
-	// Disconnected from the Main Power source.
+	// 41: Disconnected from the Main Power source.
 	DisconnectedFromMainPowerAlt
 
 	_
 	_
 
-	// Connected to the Back-up Battery.
+	// 44: Connected to the Back-up Battery.
 	ConnectedToBackupBatteryAlt
 
-	// Disconnected from the Back-up Battery.
+	// 45: Disconnected from the Back-up Battery.
 	DisconnectedToBackupBatteryAlt
 
-	// Alert of fast acceleration from Driver Pattern Analysis.
+	// 46: Alert of fast acceleration from Driver Pattern Analysis.
 	FastAccelerationFromDPAAlt
 
-	// Alert of fast braking from Driver Pattern Analysis.
+	// 47: Alert of fast braking from Driver Pattern Analysis.
 	FastBrakingFromDPAAlt
 
-	// Alert of sharp turn from Driver Pattern Analysis.
+	// 48: Alert of sharp turn from Driver Pattern Analysis.
 	SharpTurnFromDPAAlt
 
-	// Alert of over speed from Driver Pattern Analysis.
+	// 49: Alert of over speed from Driver Pattern Analysis.
 	OverSpeedFromDPAAlt
 
-	// Jamming detected.
+	// 50: Jamming detected.
 	JammingDetectedAlt
 
 	_
@@ -232,43 +232,43 @@ const (
 	_
 	_
 
-	// Inserted I-Button.
+	// 59: Inserted I-Button.
 	InsertedIButtonAlt
 
-	// Removed I-Button.
+	// 60: Removed I-Button.
 	RemovedIButtonAlt
 
-	// The vehicle turns on but doesn’t drive during predefined time.
+	// 61: The vehicle turns on but doesn’t drive during predefined time.
 	DriveLessThanPredefinedTimeAlt
 
-	// Stopped more than predefined time.
+	// 62: Stopped more than predefined time.
 	StoppedMoreThanPredefinedTimeAlt
 
-	// Dead center.
+	// 63: Dead center.
 	DeadCenterAlt
 
-	// Over RPM.
+	// 64: Over RPM.
 	OverRPMAlt
 
-	// Completed automatic RPM calibration.
+	// 65: Completed automatic RPM calibration.
 	CompletedAutoRPMCalibrationAlt
 
-	// Completed automatic odometer calibration. (by ignition or by command).
+	// 66: Completed automatic odometer calibration. (by ignition or by command).
 	CompletedAutoOdometerCalibrationAlt
 
-	// Completed automatic odometer calibration as another type in dual gear system.
+	// 67: Completed automatic odometer calibration as another type in dual gear system.
 	CompletedAutoOdometerCalibrationDualGearSystemAlt
 
-	// Alert of Stop limit at Ignition ON.
+	// 68: Alert of Stop limit at Ignition ON.
 	StopLimitAtIgnitionONAlt
 
-	// Alert of Moving after Alert 68.
+	// 69: Alert of Moving after Alert 68.
 	MovingAfterStopLimitAtIgnitionONAlt
 
 	_
 	_
 	_
 
-	// Alert of rapid reduction of the Fuel.
+	// 73: Alert of rapid reduction of the Fuel.
 	RapidFuelReductionAlt
 )
