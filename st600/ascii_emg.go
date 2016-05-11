@@ -5,42 +5,33 @@ import (
 	"github.com/larixsource/suntech/st"
 )
 
-type StatusReport struct {
+type EmergencyReport struct {
 	CommonReport
-	Mode             st.ModeType
-	MsgNum           uint16
+	EmgID            st.EmergencyType
 	DrivingHourMeter uint32
 	BackupVolt       float32
 	RealTime         bool
 	ADC              float32
 }
 
-func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
-	msg.Type = STTReport
+func parseEMGAscii(lex *lexer.Lexer, msg *Msg) {
+	msg.Type = EMGReport
 
-	stt := &StatusReport{}
-	msg.STT = stt
+	emg := &EmergencyReport{}
+	msg.EMG = emg
 
-	parseCommonAscii(lex, msg, &stt.CommonReport)
+	parseCommonAscii(lex, msg, &emg.CommonReport)
 	if msg.ParsingError != nil {
 		return
 	}
 
-	mode, token, err := st.AsciiMode(lex)
+	emgID, token, err := st.AsciiEmgID(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
 	if err != nil {
 		msg.ParsingError = err
 		return
 	}
-	stt.Mode = mode
-
-	msgNum, token, err := st.AsciiMsgNum(lex)
-	msg.Frame = append(msg.Frame, token.Literal...)
-	if err != nil {
-		msg.ParsingError = err
-		return
-	}
-	stt.MsgNum = msgNum
+	emg.EmgID = emgID
 
 	hmeter, token, err := st.AsciiDrivingHourMeter(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -48,7 +39,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	stt.DrivingHourMeter = hmeter
+	emg.DrivingHourMeter = hmeter
 
 	backupVolt, token, err := st.AsciiBackupVolt(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -56,7 +47,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	stt.BackupVolt = backupVolt
+	emg.BackupVolt = backupVolt
 
 	realTime, token, err := st.AsciiMsgType(lex, false)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -64,7 +55,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	stt.RealTime = realTime
+	emg.RealTime = realTime
 
 	adc, token, err := st.AsciiADC(lex, true)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -72,7 +63,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	stt.ADC = adc
+	emg.ADC = adc
 
 	return
 }
