@@ -49,6 +49,7 @@ type Msg struct {
 	EVT *EventReport
 	ALT *AlertReport
 	ALV *AliveReport
+	UEX *ExtDataReport
 
 	Frame []byte
 

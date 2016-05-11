@@ -5,43 +5,58 @@ import (
 	"github.com/larixsource/suntech/st"
 )
 
-type StatusReport struct {
+type ExtDataReport struct {
 	CommonReport
-	Mode             st.ModeType
-	MsgNum           uint16
+	Len              uint16
+	Data             []byte
+	Checksum         uint8
 	DrivingHourMeter uint32
 	BackupVolt       float32
 	RealTime         bool
-	ADC              float32
 }
 
-func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
-	msg.Type = STTReport
+func (edr *ExtDataReport) Valid() bool {
+	var sum byte
+	for _, b := range edr.Data {
+		sum += b
+	}
+	return sum == edr.Checksum
+}
 
-	stt := &StatusReport{}
-	msg.STT = stt
-	stt.Hdr = STTReport
+func parseUEXAscii(lex *lexer.Lexer, msg *Msg) {
+	msg.Type = UEXReport
 
-	parseCommonAscii(lex, msg, &stt.CommonReport)
+	uex := &ExtDataReport{}
+	msg.UEX = uex
+	uex.Hdr = UEXReport
+
+	parseCommonAscii(lex, msg, &uex.CommonReport)
 	if msg.ParsingError != nil {
 		return
 	}
 
-	mode, token, err := st.AsciiMode(lex)
+	length, token, err := st.AsciiLen(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
 	if err != nil {
 		msg.ParsingError = err
 		return
 	}
-	stt.Mode = mode
+	uex.Len = length
 
-	msgNum, token, err := st.AsciiMsgNum(lex)
+	token, err = lex.NextFixed(int(length) + 1)
+	msg.Frame = append(msg.Frame, token.Literal...)
+	if err != nil {
+		msg.ParsingError = err
+	}
+	uex.Data = token.Literal[:int(length)]
+
+	chk, token, err := st.AsciiChecksum(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
 	if err != nil {
 		msg.ParsingError = err
 		return
 	}
-	stt.MsgNum = msgNum
+	uex.Checksum = chk
 
 	hmeter, token, err := st.AsciiDrivingHourMeter(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -49,7 +64,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	stt.DrivingHourMeter = hmeter
+	uex.DrivingHourMeter = hmeter
 
 	backupVolt, token, err := st.AsciiBackupVolt(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
@@ -57,23 +72,15 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		msg.ParsingError = err
 		return
 	}
-	stt.BackupVolt = backupVolt
+	uex.BackupVolt = backupVolt
 
-	realTime, token, err := st.AsciiMsgType(lex, false)
+	realTime, token, err := st.AsciiMsgType(lex, true)
 	msg.Frame = append(msg.Frame, token.Literal...)
 	if err != nil {
 		msg.ParsingError = err
 		return
 	}
-	stt.RealTime = realTime
-
-	adc, token, err := st.AsciiADC(lex, true)
-	msg.Frame = append(msg.Frame, token.Literal...)
-	if err != nil {
-		msg.ParsingError = err
-		return
-	}
-	stt.ADC = adc
+	uex.RealTime = realTime
 
 	return
 }

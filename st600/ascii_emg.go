@@ -19,6 +19,7 @@ func parseEMGAscii(lex *lexer.Lexer, msg *Msg) {
 
 	emg := &EmergencyReport{}
 	msg.EMG = emg
+	emg.Hdr = EMGReport
 
 	parseCommonAscii(lex, msg, &emg.CommonReport)
 	if msg.ParsingError != nil {

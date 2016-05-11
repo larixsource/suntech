@@ -101,6 +101,8 @@ func (p *Parser) parseAscii() *Msg {
 		parseALTAscii(p.lex, msg)
 	case ALVReport:
 		parseALVAscii(p.lex, msg)
+	case UEXReport:
+		parseUEXAscii(p.lex, msg)
 	default:
 		msg.ParsingError = ErrUnknownHdr
 	}
@@ -121,6 +123,7 @@ var (
 	evtHdr = []byte("T600EVT;")
 	altHdr = []byte("T600ALT;")
 	alvHdr = []byte("T600ALV;")
+	uexHdr = []byte("T600UEX;")
 )
 
 func asciiHdr(token lexer.Token) MsgType {
@@ -138,6 +141,8 @@ func asciiHdr(token lexer.Token) MsgType {
 		return ALTReport
 	case bytes.Equal(token.Literal, alvHdr):
 		return ALVReport
+	case bytes.Equal(token.Literal, uexHdr):
+		return UEXReport
 	default:
 		return UnknownMsg
 	}

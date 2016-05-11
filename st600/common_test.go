@@ -10,6 +10,7 @@ import (
 func equalCommon(t *testing.T, expected *CommonReport, actual *CommonReport) {
 	require.NotNil(t, expected)
 	require.NotNil(t, actual)
+	assert.Equal(t, expected.Hdr, actual.Hdr)
 	assert.Equal(t, expected.DevID, actual.DevID)
 	assert.Equal(t, expected.Model, actual.Model)
 	assert.Equal(t, expected.SwVer, actual.SwVer)

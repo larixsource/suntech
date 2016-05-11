@@ -19,6 +19,7 @@ func parseALTAscii(lex *lexer.Lexer, msg *Msg) {
 
 	alt := &AlertReport{}
 	msg.ALT = alt
+	alt.Hdr = ALTReport
 
 	parseCommonAscii(lex, msg, &alt.CommonReport)
 	if msg.ParsingError != nil {

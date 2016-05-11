@@ -21,6 +21,7 @@ func parseEVTAscii(lex *lexer.Lexer, msg *Msg) {
 
 	evt := &EventReport{}
 	msg.EVT = evt
+	evt.Hdr = EVTReport
 
 	token, err := lex.Next(10, st.Separator)
 	msg.Frame = append(msg.Frame, token.Literal...)

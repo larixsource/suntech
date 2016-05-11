@@ -41,6 +41,7 @@ var (
 	ErrInvalidEmgID     = errors.New("invalid EmgID")
 	ErrInvalidEvtID     = errors.New("invalid EvtID")
 	ErrInvalidAltID     = errors.New("invalid AltID")
+	ErrInvalidHLen      = errors.New("invalid Length")
 )
 
 func AsciiDevID(lex *lexer.Lexer) (devID string, token lexer.Token, err error) {
@@ -637,6 +638,44 @@ func AsciiADC(lex *lexer.Lexer, last bool) (adc float32, token lexer.Token, err 
 		return
 	}
 	adc = float32(bv)
+
+	return
+}
+
+func AsciiLen(lex *lexer.Lexer) (length uint16, token lexer.Token, err error) {
+	token, err = lex.Next(6, Separator)
+	if err != nil {
+		return
+	}
+	if !token.OnlyDigits() {
+		err = ErrInvalidHMeter
+		return
+	}
+	l, parseErr := strconv.ParseUint(string(token.WithoutSuffix()), 10, 16)
+	if parseErr != nil {
+		err = parseErr
+		return
+	}
+	length = uint16(l)
+
+	return
+}
+
+func AsciiChecksum(lex *lexer.Lexer) (chk uint8, token lexer.Token, err error) {
+	token, err = lex.Next(6, Separator)
+	if err != nil {
+		return
+	}
+	if !token.OnlyDigits() {
+		err = ErrInvalidHMeter
+		return
+	}
+	crc, parseErr := strconv.ParseUint(string(token.WithoutSuffix()), 16, 16)
+	if parseErr != nil {
+		err = parseErr
+		return
+	}
+	chk = uint8(crc)
 
 	return
 }
