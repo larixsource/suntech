@@ -9,5 +9,6 @@ Emergency Report | yes
 Event Report | yes
 Alert Report | yes
 Alive Report | yes
+External Data Report | yes
 
 Zip aren't supported yet.
