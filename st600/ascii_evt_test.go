@@ -6,6 +6,8 @@ import (
 	"testing"
 	"time"
 
+	"io"
+
 	"github.com/larixsource/suntech/st"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -91,4 +93,14 @@ func TestEVT600(t *testing.T) {
 		equalEVT(t, &expectedEVT, msg.EVT)
 	}
 	assert.False(t, p.Next())
+}
+
+func TestSTT600FuzzBug2(t *testing.T) {
+	frame := "ST600EVT;000000000;20;000;"
+	p := ParseString(frame, ParserOpts{})
+	assert.True(t, p.Next())
+	assert.Nil(t, p.Error())
+	msg := p.Msg()
+	require.NotNil(t, msg)
+	assert.Equal(t, io.EOF, msg.ParsingError)
 }

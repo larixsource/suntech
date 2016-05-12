@@ -63,8 +63,12 @@ func parseEVTAscii(lex *lexer.Lexer, msg *Msg) {
 	evt.SwVer = swVer
 
 	ts, tokens, err := st.AsciiTimestamp(lex)
-	msg.Frame = append(msg.Frame, tokens[0].Literal...)
-	msg.Frame = append(msg.Frame, tokens[1].Literal...)
+	if len(tokens) >= 1 {
+		msg.Frame = append(msg.Frame, tokens[0].Literal...)
+	}
+	if len(tokens) >= 2 {
+		msg.Frame = append(msg.Frame, tokens[1].Literal...)
+	}
 	if err != nil {
 		msg.ParsingError = err
 		return

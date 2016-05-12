@@ -1,6 +1,7 @@
 package st600
 
 import (
+	"io"
 	"testing"
 	"time"
 
@@ -172,4 +173,14 @@ func TestSTT600VBuff(t *testing.T) {
 	equalSTT(t, expectedSTT, msg.STT)
 
 	assert.False(t, p.Next())
+}
+
+func TestSTT600FuzzBug1(t *testing.T) {
+	frame := "ST600STT;000000000;20;000;"
+	p := ParseString(frame, ParserOpts{})
+	assert.True(t, p.Next())
+	assert.Nil(t, p.Error())
+	msg := p.Msg()
+	require.NotNil(t, msg)
+	assert.Equal(t, io.EOF, msg.ParsingError)
 }
