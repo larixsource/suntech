@@ -44,6 +44,8 @@ type Msg struct {
 
 	Type MsgType
 
+	CGF *ST300CGF
+
 	STT *StatusReport
 	EMG *EmergencyReport
 	EVT *EventReport

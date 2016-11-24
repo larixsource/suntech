@@ -78,6 +78,25 @@ func AsciiDevIDAtEnd(lex *lexer.Lexer) (devID string, token lexer.Token, err err
 	return
 }
 
+func AsciiDevIDOrRes(lex *lexer.Lexer) (isDevID bool, devID string, token lexer.Token, err error) {
+	token, err = lex.Next(10, Separator)
+	if err != nil {
+		return
+	}
+
+	switch {
+	case token.OnlyDigits() && len(token.WithoutSuffix()) == 9:
+		isDevID = true
+		devID = string(token.WithoutSuffix())
+		return
+	case bytes.Equal(ResLiteral, token.WithoutSuffix()):
+		return
+	default:
+		err = ErrInvalidDevID
+		return
+	}
+}
+
 func AsciiModel(lex *lexer.Lexer) (model Model, token lexer.Token, err error) {
 	token, err = lex.NextFixed(3)
 	if err != nil {

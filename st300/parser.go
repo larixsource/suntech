@@ -91,6 +91,8 @@ func (p *Parser) parseAscii() *Msg {
 	msg.Frame = append(msg.Frame, token.Literal...)
 
 	switch hdr {
+	case CGFCmd:
+		parseCGF(p.lex, msg)
 	case STTReport:
 		parseSTTAscii(p.lex, msg)
 	case EMGReport:
@@ -114,6 +116,7 @@ func (p *Parser) parseAscii() *Msg {
 }
 
 var (
+	cgfHdr = []byte("T300CGF;")
 	sttHdr = []byte("T300STT;")
 	emgHdr = []byte("T300EMG;")
 	evtHdr = []byte("T300EVT;")
@@ -133,6 +136,8 @@ func asciiHdr(token lexer.Token) MsgType {
 		return EVTReport
 	case bytes.Equal(token.Literal, altHdr):
 		return ALTReport
+	case bytes.Equal(token.Literal, cgfHdr):
+		return CGFCmd
 	default:
 		return UnknownMsg
 	}
