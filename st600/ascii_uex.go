@@ -74,7 +74,7 @@ func parseUEXAscii(lex *lexer.Lexer, msg *Msg) {
 	}
 	uex.BackupVolt = backupVolt
 
-	realTime, token, err := st.AsciiMsgType(lex, true)
+	realTime, token, err := st.AsciiBit(lex, true)
 	msg.Frame = append(msg.Frame, token.Literal...)
 	if err != nil {
 		msg.ParsingError = err

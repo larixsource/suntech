@@ -190,7 +190,7 @@ func parseSTTAscii(lex *lexer.Lexer, msg *Msg) {
 		unknownTail = true
 	}
 
-	realTime, token, err := st.AsciiMsgType(lex, !unknownTail)
+	realTime, token, err := st.AsciiBit(lex, !unknownTail)
 	msg.Frame = append(msg.Frame, token.Literal...)
 	if err != nil {
 		msg.ParsingError = err

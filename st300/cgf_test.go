@@ -10,7 +10,7 @@ import (
 func TestST300CGF(t *testing.T) {
 	cgf := ST300CGF{
 		DevID:     "100850000",
-		SwVer:     2,
+		SwVer:     "02",
 		GeoID:     1,
 		Active:    true,
 		Latitude:  37.0,
@@ -35,11 +35,11 @@ func TestST300CGFRes(t *testing.T) {
 	assert.NotNil(t, cgf)
 	assert.True(t, cgf.Resp)
 	assert.Equal(t, "100850000", cgf.DevID)
-	assert.Equal(t, "010", cgf.SwVer)
+	assert.EqualValues(t, "010", cgf.SwVer)
 	assert.Equal(t, 1, cgf.GeoID)
 	assert.True(t, cgf.Active)
-	assert.Equal(t, 37.0, cgf.Latitude)
-	assert.Equal(t, 127.0, cgf.Longitude)
+	assert.EqualValues(t, 37.0, cgf.Latitude)
+	assert.EqualValues(t, 127.0, cgf.Longitude)
 	assert.Equal(t, 50, cgf.Radius)
 	assert.True(t, cgf.In)
 	assert.True(t, cgf.Out)

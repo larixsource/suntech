@@ -50,7 +50,7 @@ func parseEMGAscii(lex *lexer.Lexer, msg *Msg) {
 	}
 	emg.BackupVolt = backupVolt
 
-	realTime, token, err := st.AsciiMsgType(lex, false)
+	realTime, token, err := st.AsciiBit(lex, false)
 	msg.Frame = append(msg.Frame, token.Literal...)
 	if err != nil {
 		msg.ParsingError = err

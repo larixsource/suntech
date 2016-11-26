@@ -10,7 +10,7 @@ import (
 
 type ST300CGF struct {
 	DevID     string
-	SwVer     uint16
+	SwVer     string
 	GeoID     int
 	Active    bool
 	Latitude  float32
@@ -28,7 +28,7 @@ func (gf *ST300CGF) Command() []byte {
 	buf.WriteString("ST300CGF;")
 	buf.WriteString(gf.DevID)
 	buf.WriteByte(';')
-	buf.WriteString(strconv.FormatUint(uint64(gf.SwVer), 10))
+	buf.WriteString(gf.SwVer)
 	buf.WriteByte(';')
 	buf.WriteString(strconv.Itoa(gf.GeoID))
 	buf.WriteByte(';')
@@ -86,7 +86,7 @@ func parseCGF(lex *lexer.Lexer, msg *Msg) {
 		cgf.DevID = devID
 	}
 
-	swVer, token, err := st.AsciiSwVer(lex)
+	swVer, token, err := st.AsciiSwVer2(lex)
 	msg.Frame = append(msg.Frame, token.Literal...)
 	if err != nil {
 		msg.ParsingError = err
@@ -94,5 +94,59 @@ func parseCGF(lex *lexer.Lexer, msg *Msg) {
 	}
 	cgf.SwVer = swVer
 
-	// TODO
+	geoID, token, err := st.AsciiGeoID(lex)
+	msg.Frame = append(msg.Frame, token.Literal...)
+	if err != nil {
+		msg.ParsingError = err
+		return
+	}
+	cgf.GeoID = geoID
+
+	active, token, err := st.AsciiBit(lex, false)
+	msg.Frame = append(msg.Frame, token.Literal...)
+	if err != nil {
+		msg.ParsingError = err
+		return
+	}
+	cgf.Active = active
+
+	lat, token, err := st.AsciiLat(lex)
+	msg.Frame = append(msg.Frame, token.Literal...)
+	if err != nil {
+		msg.ParsingError = err
+		return
+	}
+	cgf.Latitude = lat
+
+	lon, token, err := st.AsciiLon(lex)
+	msg.Frame = append(msg.Frame, token.Literal...)
+	if err != nil {
+		msg.ParsingError = err
+		return
+	}
+	cgf.Longitude = lon
+
+	radius, token, err := st.AsciiRadius(lex)
+	msg.Frame = append(msg.Frame, token.Literal...)
+	if err != nil {
+		msg.ParsingError = err
+		return
+	}
+	cgf.Radius = radius
+
+	in, token, err := st.AsciiBit(lex, false)
+	msg.Frame = append(msg.Frame, token.Literal...)
+	if err != nil {
+		msg.ParsingError = err
+		return
+	}
+	cgf.In = in
+
+	out, token, err := st.AsciiBit(lex, true)
+	msg.Frame = append(msg.Frame, token.Literal...)
+	if err != nil {
+		msg.ParsingError = err
+		return
+	}
+	cgf.Out = out
 }

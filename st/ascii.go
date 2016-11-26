@@ -141,6 +141,23 @@ func AsciiSwVer(lex *lexer.Lexer) (swVer uint16, token lexer.Token, err error) {
 	return
 }
 
+func AsciiSwVer2(lex *lexer.Lexer) (swVer string, token lexer.Token, err error) {
+	token, err = lex.Next(4, Separator)
+	if err != nil {
+		return
+	}
+	if !token.OnlyDigits() {
+		err = ErrInvalidSwVer
+		return
+	}
+	if !token.EndsWith(Separator) {
+		err = ErrSeparator
+		return
+	}
+	swVer = string(token.WithoutSuffix())
+	return
+}
+
 func AsciiTimestamp(lex *lexer.Lexer) (ts time.Time, tokens []lexer.Token, err error) {
 	tokens = make([]lexer.Token, 0, 2)
 
@@ -429,7 +446,7 @@ func AsciiBackupVolt(lex *lexer.Lexer) (backupVolt float32, token lexer.Token, e
 	return
 }
 
-func AsciiMsgType(lex *lexer.Lexer, last bool) (realTime bool, token lexer.Token, err error) {
+func AsciiBit(lex *lexer.Lexer, last bool) (value bool, token lexer.Token, err error) {
 	token, err = lex.NextFixed(2)
 	if err != nil {
 		return
@@ -448,11 +465,11 @@ func AsciiMsgType(lex *lexer.Lexer, last bool) (realTime bool, token lexer.Token
 	}
 	switch token.Literal[0] {
 	case '0':
-		realTime = false
+		value = false
 	case '1':
-		realTime = true
+		value = true
 	default:
-		err = fmt.Errorf("invalid MsgType value: %v", token.Literal[0])
+		err = fmt.Errorf("invalid bit value: %v", token.Literal[0])
 	}
 	return
 }
@@ -696,5 +713,35 @@ func AsciiChecksum(lex *lexer.Lexer) (chk uint8, token lexer.Token, err error) {
 	}
 	chk = uint8(crc)
 
+	return
+}
+
+func AsciiGeoID(lex *lexer.Lexer) (geoID int, token lexer.Token, err error) {
+	token, err = lex.Next(4, Separator)
+	if err != nil {
+		return
+	}
+	if !token.OnlyDigits() {
+		err = ErrInvalidAltID
+		return
+	}
+	if !token.EndsWith(Separator) {
+		err = ErrSeparator
+		return
+	}
+	geoID, err = strconv.Atoi(string(token.WithoutSuffix()))
+	return
+}
+
+func AsciiRadius(lex *lexer.Lexer) (radius int, token lexer.Token, err error) {
+	token, err = lex.Next(6, Separator)
+	if err != nil {
+		return
+	}
+	if !token.OnlyDigits() {
+		err = ErrInvalidHMeter
+		return
+	}
+	radius, err = strconv.Atoi(string(token.WithoutSuffix()))
 	return
 }
