@@ -375,9 +375,9 @@ func AsciiMode(lex *lexer.Lexer) (mode ModeType, token lexer.Token, err error) {
 	}
 	switch token.Literal[0] {
 	case '1':
-		mode = IdleMode
+		mode = ParkingMode
 	case '2':
-		mode = ActiveMode
+		mode = DrivingMode
 	case '4':
 		mode = DistanceMode
 	case '5':

@@ -49,8 +49,8 @@ var (
 type ModeType int
 
 const (
-	IdleMode ModeType = iota + 1
-	ActiveMode
+	ParkingMode ModeType = iota + 1
+	DrivingMode
 	_
 	DistanceMode
 	AngleMode
